@@ -1,10 +1,10 @@
 [package]
 name = "tinted_luau_sys"
-version = "0.0.2"
+version = "0.1.0"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/tinted-software/luau-rs"
-description = "A pure rust implementation of the Luau VM"
+description = "Luau bindings for Rust"
 
 [lib]
 name = "luau_sys"
@@ -14,4 +14,9 @@ name = "luau_sys"
 [build-dependencies]
 pkg-config = "0.3.31"
 
+[[example]]
+name = "hello"
+
 [features]
+default = ["std"]
+std = []
