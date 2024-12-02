@@ -1,0 +1,17 @@
+[package]
+name = "tinted_luau_sys"
+version = "0.0.2"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/tinted-software/luau-rs"
+description = "A pure rust implementation of the Luau VM"
+
+[lib]
+name = "luau_sys"
+
+[dependencies]
+
+[build-dependencies]
+pkg-config = "0.3.31"
+
+[features]
