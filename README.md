@@ -6,7 +6,7 @@ This crate currently depends on the CMake Improvements PR that adds pkg-config s
 You can compile the Luau Engine with the following commands on a Linux machine:
 
 ```shell
-git clone -b theoparis/add-install-target https://github.com/theoparis/luau
+git clone https://github.com/theoparis/luau
 cd luau
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local
 cmake --build build

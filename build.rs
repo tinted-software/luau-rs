@@ -1,3 +1,4 @@
+use bindgen::{EnumVariation, RustTarget};
 use pkg_config::Config;
 use std::env;
 use std::path::PathBuf;
@@ -30,32 +31,24 @@ fn main() {
 		println!("cargo:rustc-link-lib={}", lib);
 	}
 
-	let mut args = vec![
-		"src/wrapper.h".to_string(),
-		"--use-core".to_string(),
-		"--no-layout-tests".to_string(),
-		"--".to_string(),
-		"-x".to_string(),
-		"c++".to_string(),
-	];
-	for include_path in luau.include_paths {
-		args.push("-I".to_string());
-		args.push(include_path.to_string_lossy().to_string());
-	}
-	for cxx_stdlib in &cxx_stdlib {
-		args.push("-l".to_string());
-		args.push(cxx_stdlib.clone());
-	}
+	let bindings = bindgen::Builder::default()
+		.header("src/wrapper.h")
+		.clang_arg("-xc++")
+		.use_core()
+		.rust_edition(bindgen::RustEdition::Edition2024)
+		.rust_target(RustTarget::stable(85, 0).ok().unwrap())
+		.layout_tests(false)
+		.default_enum_style(EnumVariation::NewType {
+			is_bitfield: false,
+			is_global: false,
+		})
+		.derive_default(true)
+		.parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+		.generate()
+		.expect("Unable to generate bindings");
 
 	let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-
-	std::fs::write(
-		out_path.join("bindings.rs"),
-		std::process::Command::new("bindgen")
-			.args(args)
-			.output()
-			.expect("Failed to execute bindgen")
-			.stdout,
-	)
-	.expect("Failed to write bindings");
+	bindings
+		.write_to_file(out_path.join("bindings.rs"))
+		.expect("Couldn't write bindings!");
 }

@@ -7,13 +7,9 @@ include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 #[cfg(feature = "std")]
 pub mod safe {
-	extern crate std;
-
 	use std::ffi::CString;
 	use std::slice;
 
-	use crate::luaL_newstate;
-	use crate::luaL_openlibs;
 	use crate::lua_CFunction;
 	use crate::lua_CompileOptions;
 	use crate::lua_State;
@@ -21,6 +17,8 @@ pub mod safe {
 	use crate::lua_pcall;
 	use crate::lua_pushcclosurek;
 	use crate::lua_tolstring;
+	use crate::luaL_newstate;
+	use crate::luaL_openlibs;
 	use crate::luau_compile;
 	use crate::luau_load;
 
@@ -78,11 +76,7 @@ pub mod safe {
 						debugLevel: 1,
 						typeInfoLevel: 1,
 						coverageLevel: 0,
-						vectorLib: core::ptr::null_mut(),
-						vectorCtor: core::ptr::null_mut(),
-						vectorType: core::ptr::null_mut(),
-						mutableGlobals: core::ptr::null_mut(),
-						userdataTypes: core::ptr::null_mut(),
+						..Default::default()
 					});
 
 				let mut bytecode_size = 0;
@@ -125,10 +119,7 @@ pub mod safe {
 						let mut len: usize = 0;
 						let version_ptr =
 							lua_tolstring(self.state, -1, &mut len);
-						let s = slice::from_raw_parts(
-							version_ptr as *const u8,
-							len,
-						);
+						let s = slice::from_raw_parts(version_ptr, len);
 						core::str::from_utf8(s).unwrap()
 					};
 
